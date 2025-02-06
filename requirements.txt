@@ -1,0 +1,6 @@
+cython
+numpy
+matplotlib
+pytensor
+aesara
+scikit-learn
