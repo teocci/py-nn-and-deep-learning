@@ -22,13 +22,12 @@ import numpy as np
 
 
 #### Define the quadratic and cross-entropy cost functions
-
 class QuadraticCost(object):
 
     @staticmethod
     def fn(a, y):
-        """Return the cost associated with an output ``a`` and desired output
-        ``y``.
+        """Return the cost associated with an output `a` and desired output
+        `y`.
 
         """
         return 0.5 * np.linalg.norm(a - y) ** 2
@@ -43,9 +42,9 @@ class CrossEntropyCost(object):
 
     @staticmethod
     def fn(a, y):
-        """Return the cost associated with an output ``a`` and desired output
-        ``y``.  Note that np.nan_to_num is used to ensure numerical
-        stability.  In particular, if both ``a`` and ``y`` have a 1.0
+        """Return the cost associated with an output `a` and desired output
+        `y`.  Note that np.nan_to_num is used to ensure numerical
+        stability.  In particular, if both `a` and `y` have a 1.0
         in the same slot, then the expression (1-y)*np.log(1-a)
         returns nan.  The np.nan_to_num ensures that that is converted
         to the correct value (0.0).
@@ -56,25 +55,25 @@ class CrossEntropyCost(object):
     @staticmethod
     def delta(z, a, y):
         """Return the error delta from the output layer.  Note that the
-        parameter ``z`` is not used by the method.  It is included in
+        parameter `z` is not used by the method.  It is included in
         the method's parameters in order to make the interface
         consistent with the delta method for other cost classes.
 
         """
-        return (a - y)
+        return a - y
 
 
 #### Main Network class
 class Network(object):
 
     def __init__(self, sizes, cost=CrossEntropyCost):
-        """The list ``sizes`` contains the number of neurons in the respective
+        """The list `sizes` contains the number of neurons in the respective
         layers of the network.  For example, if the list was [2, 3, 1]
         then it would be a three-layer network, with the first layer
         containing 2 neurons, the second layer 3 neurons, and the
         third layer 1 neuron.  The biases and weights for the network
         are initialized randomly, using
-        ``self.default_weight_initializer`` (see docstring for that
+        `self.default_weight_initializer` (see docstring for that
         method).
 
         """
@@ -121,24 +120,31 @@ class Network(object):
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
     def feedforward(self, a):
-        """Return the output of the network if ``a`` is input."""
+        """Return the output of the network if `a` is input."""
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a) + b)
         return a
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta,
+    def sgd(
+            self,
+            training_data,
+            epochs,
+            mini_batch_size,
+            eta,
             lmbda=0.0,
             evaluation_data=None,
             monitor_evaluation_cost=False,
             monitor_evaluation_accuracy=False,
             monitor_training_cost=False,
-            monitor_training_accuracy=False):
+            monitor_training_accuracy=False,
+            is_sub_training=False
+    ):
         """Train the neural network using mini-batch stochastic gradient
-        descent.  The ``training_data`` is a list of tuples ``(x, y)``
+        descent.  The `training_data` is a list of tuples `(x, y)`
         representing the training inputs and the desired outputs.  The
         other non-optional parameters are self-explanatory, as is the
-        regularization parameter ``lmbda``.  The method also accepts
-        ``evaluation_data``, usually either the validation or test
+        regularization parameter `lmbda`.  The method also accepts
+        `evaluation_data`, usually either the validation or test
         data.  We can monitor the cost and accuracy on either the
         evaluation data or the training data, by setting the
         appropriate flags.  The method returns a tuple containing four
@@ -156,7 +162,10 @@ class Network(object):
         n = len(training_data)
         evaluation_cost, evaluation_accuracy = [], []
         training_cost, training_accuracy = [], []
-        for j in range(epochs):
+
+        label = "Step" if is_sub_training else "Epoch"
+
+        for ei in range(epochs):
             random.shuffle(training_data)
             mini_batches = [
                 training_data[k:k + mini_batch_size]
@@ -164,32 +173,33 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(
                     mini_batch, eta, lmbda, len(training_data))
-            print("Epoch %s training complete" % j)
+            print(f"{label} {ei + 1} training complete")
             if monitor_training_cost:
                 cost = self.total_cost(training_data, lmbda)
                 training_cost.append(cost)
-                print("Cost on training data: {}".format(cost))
+                print(f"Cost on training data: {cost}")
             if monitor_training_accuracy:
                 accuracy = self.accuracy(training_data, convert=True)
                 training_accuracy.append(accuracy)
-                print("Accuracy on training data: {} / {}".format(accuracy, n))
+                print(f"Accuracy on training data: {accuracy} / {n}")
             if monitor_evaluation_cost:
                 cost = self.total_cost(evaluation_data, lmbda, convert=True)
                 evaluation_cost.append(cost)
-                print("Cost on evaluation data: {}".format(cost))
+                print(f"Cost on evaluation data: {cost}")
             if monitor_evaluation_accuracy:
                 accuracy = self.accuracy(evaluation_data)
                 evaluation_accuracy.append(accuracy)
-                print("Accuracy on evaluation data: {} / {}".format(self.accuracy(evaluation_data), n_data))
+                print(f"Accuracy on evaluation data: {self.accuracy(evaluation_data)} / {n_data}")
+
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
     def update_mini_batch(self, mini_batch, eta, lmbda, n):
         """Update the network's weights and biases by applying gradient
         descent using backpropagation to a single mini batch.  The
-        ``mini_batch`` is a list of tuples ``(x, y)``, ``eta`` is the
-        learning rate, ``lmbda`` is the regularization parameter, and
-        ``n`` is the total size of the training data set.
+        `mini_batch` is a list of tuples `(x, y)`, `eta` is the
+        learning rate, `lmbda` is the regularization parameter, and
+        `n` is the total size of the training data set.
 
         """
         nabla_b = [np.zeros(b.shape) for b in self.biases]
@@ -204,10 +214,10 @@ class Network(object):
                        for b, nb in zip(self.biases, nabla_b)]
 
     def backprop(self, x, y):
-        """Return a tuple ``(nabla_b, nabla_w)`` representing the
-        gradient for the cost function C_x.  ``nabla_b`` and
-        ``nabla_w`` are layer-by-layer lists of numpy arrays, similar
-        to ``self.biases`` and ``self.weights``."""
+        """Return a tuple `(nabla_b, nabla_w)` representing the
+        gradient for the cost function C_x.  `nabla_b` and
+        `nabla_w` are layer-by-layer lists of numpy arrays, similar
+        to `self.biases` and `self.weights`."""
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         # feedforward
@@ -235,18 +245,18 @@ class Network(object):
             delta = np.dot(self.weights[-l + 1].transpose(), delta) * sp
             nabla_b[-l] = delta
             nabla_w[-l] = np.dot(delta, activations[-l - 1].transpose())
-        return (nabla_b, nabla_w)
+        return nabla_b, nabla_w
 
     def accuracy(self, data, convert=False):
-        """Return the number of inputs in ``data`` for which the neural
+        """Return the number of inputs in `data` for which the neural
         network outputs the correct result. The neural network's
         output is assumed to be the index of whichever neuron in the
         final layer has the highest activation.
 
-        The flag ``convert`` should be set to False if the data set is
+        The flag `convert` should be set to False if the data set is
         validation or test data (the usual case), and to True if the
         data set is the training data. The need for this flag arises
-        due to differences in the way the results ``y`` are
+        due to differences in the way the results `y` are
         represented in the different data sets.  In particular, it
         flags whether we need to convert between the different
         representations.  It may seem strange to use different
@@ -269,11 +279,11 @@ class Network(object):
         return sum(int(x == y) for (x, y) in results)
 
     def total_cost(self, data, lmbda, convert=False):
-        """Return the total cost for the data set ``data``.  The flag
-        ``convert`` should be set to False if the data set is the
+        """Return the total cost for the data set `data`.  The flag
+        `convert` should be set to False if the data set is the
         training data (the usual case), and to True if the data set is
         the validation or test data.  See comments on the similar (but
-        reversed) convention for the ``accuracy`` method, above.
+        reversed) convention for the `accuracy` method, above.
         """
         cost = 0.0
         for x, y in data:
@@ -285,7 +295,7 @@ class Network(object):
         return cost
 
     def save(self, filename):
-        """Save the neural network to the file ``filename``."""
+        """Save the neural network to the file `filename`."""
         data = {"sizes": self.sizes,
                 "weights": [w.tolist() for w in self.weights],
                 "biases": [b.tolist() for b in self.biases],
@@ -297,7 +307,7 @@ class Network(object):
 
 #### Loading a Network
 def load(filename):
-    """Load a neural network from the file ``filename``.  Returns an
+    """Load a neural network from the file `filename`.  Returns an
     instance of Network.
 
     """

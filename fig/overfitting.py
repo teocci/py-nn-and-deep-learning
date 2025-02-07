@@ -12,8 +12,8 @@ import sys
 
 # My library
 sys.path.append('../src/')
-import mnist_loader
-import network2
+import src.mnist_loader_e as mnist_loader
+import src.network2_e as network2
 
 # Third-party libraries
 import matplotlib.pyplot as plt
