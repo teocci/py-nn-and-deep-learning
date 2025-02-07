@@ -1,41 +1,63 @@
-# Code samples for "Neural Networks and Deep Learning"
+# Python "Neural Networks and Deep Learning"
 
-This repository contains code samples for my book on ["Neural Networks
-and Deep Learning"](http://neuralnetworksanddeeplearning.com).
+This repository provides functions to train a simple AI using backpropagation, including snippets for extracting training and validation data. The code has been enhanced with **NumPy** and **PyTensor**.
 
-The code is written for Python 2.6 or 2.7. There is a version for 
-Python 3.8-3.10 [here](https://github.com/unexploredtest/neural-networks-and-deep-learning). 
-I will not be updating the current repository for Python 3 compatibility.
+## Updates
+- The code has been updated to be compatible with **Python 3.11**.
+- Libraries have been enhanced with the use of **NumPy** and **PyTensor**.
+- **PyTensor version 2.27.1** is utilized.
 
-The program `src/network3.py` uses version 0.6 or 0.7 of the Theano
-library.  It needs modification for compatibility with later versions
-of the library.  I will not be making such modifications.
+## Installation
 
-As the code is written to accompany the book, I don't intend to add
-new features. However, bug reports are welcome, and you should feel
-free to fork and modify the code.
+### Setting up a Virtual Environment
+
+To isolate your project environment, use `virtualenv`. Here's how you can set it up:
+
+1. **Install virtualenv** if you haven't already:
+```sh
+pip install virtualenv
+```
+2. **Create a virtual environment** in the project directory:
+```sh
+python -m virtualenv .venv
+```
+3. **Activate the virtual environment**:
+- On Windows:
+```sh
+.venv\Scripts\activate
+```
+On macOS and Linux:
+```sh
+source .venv/bin/activate
+```
+Once activated, your command prompt should change to indicate the virtual environment is active.
+
+### Requirements
+Before you can run the code, you need to install the following dependencies:
+
+- Python 3.11
+- NumPy (latest compatible version)
+- PyTensor 2.27.1
+
+You can install these dependencies using the `requirements.txt` file:
+
+```sh
+pip install -r requirements.txt
+```
 
 ## License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-MIT License
+## Usage
+The code in this repository:
 
-Copyright (c) 2012-2022 Michael Nielsen
+- Provides functions to train a simple AI using backpropagation.
+- Includes snippets to extract training data and validation data.
+- No new features will be added to this repository.
+- Bug reports are welcome. Please submit them via the issue tracker.
+- Feel free to fork and modify the code for your own purposes.
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Notes
+- This repository will not be updated for compatibility with future Python versions or library updates beyond what's currently specified.
+- Enhancements have been made using NumPy for numerical operations and PyTensor for symbolic computation.
+- Make sure your `requirements.txt` file lists `numpy` and `pytensor` with their respective versions or constraints.
